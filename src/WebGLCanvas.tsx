@@ -94,7 +94,7 @@ export const WebGLCanvas: React.FC<WebGLCanvasProps> = (props) => {
             width={width}
             height={height}
             style={{
-                maxWidth: "100%",
+                maxWidth: `min(100%, ${width}px)`,
             }}
         ></canvas>
     )

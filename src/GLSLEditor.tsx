@@ -29,7 +29,7 @@ const GLSLEditor: React.FC<GLSLEditorProps> = (props: GLSLEditorProps) => {
     }
 
     return (
-        <>
+        <div style={{ flex: 1, minWidth: "0", marginTop: "1rem" }}>
             <button onClick={onClick} style={{ width: "100%", marginBottom: "1rem" }}>
                 Compile Shader
             </button >
@@ -39,9 +39,11 @@ const GLSLEditor: React.FC<GLSLEditorProps> = (props: GLSLEditorProps) => {
                 defaultValue={fragmentShaderSource}
                 theme="vs-dark"
                 onMount={handleEditorDidMount}
-
+                options={{
+                    automaticLayout: true,
+                }}
             />
-        </>
+        </ div>
     );
 };
 
