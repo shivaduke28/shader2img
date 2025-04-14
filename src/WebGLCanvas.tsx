@@ -17,7 +17,12 @@ export const WebGLCanvas: React.FC<WebGLCanvasProps> = (props) => {
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
-        const gl = canvas.getContext("webgl2");
+        const gl = canvas.getContext("webgl2", {
+            antialias: false,
+            alpha: false,
+            depth: false,
+            preserveDrawingBuffer: true,
+        });
         if (!gl) return;
         glRef.current = gl;
 
@@ -39,9 +44,6 @@ export const WebGLCanvas: React.FC<WebGLCanvasProps> = (props) => {
         const positionLocation = shader.attributeLocations.position;
         gl.enableVertexAttribArray(positionLocation);
         gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-
-        // no depth
-        gl.disable(gl.DEPTH_TEST);
 
         const uniforms: Uniforms = {
             time: 0,
