@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { createShader } from "./Shader";
 
 type WebGLCanvasProps = {
     width?: number;
@@ -15,9 +16,31 @@ export const WebGLCanvas: React.FC<WebGLCanvasProps> = ({ width = 1080, height =
         const gl = canvas.getContext("webgl2");
         if (!gl) return;
         glRef.current = gl;
-        gl.viewport(0, 0, width, height);
+
+        const shader = createShader(gl);
+        if (!shader) return;
+        gl.useProgram(shader.program);
+
+        const vertices = new Float32Array([
+            -1.0, -1.0,
+            1.0, -1.0,
+            -1.0, 1.0,
+            1.0, -1.0,
+            1.0, 1.0,
+            -1.0, 1.0,
+        ]);
+        const buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+        const positionLocation = shader.attributeLocations.position;
+        gl.enableVertexAttribArray(positionLocation);
+        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 2);
+        gl.flush();
     });
 
     useEffect(() => {
