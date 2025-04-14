@@ -1,8 +1,10 @@
 import vertexShaderSource from './shaders/vertex.vs?raw'
 import fragmentShaderSource from './shaders/fragment.fs?raw'
+import { vec2 } from 'gl-matrix'
 
 export type Uniforms = {
     time: number,
+    resolution: vec2,
 }
 
 export type Shader = {
@@ -12,6 +14,7 @@ export type Shader = {
     },
     uniformLocations: {
         time: WebGLUniformLocation | null,
+        resolution: WebGLUniformLocation | null,
     }
 }
 
@@ -58,6 +61,7 @@ export const createShader = (gl: WebGL2RenderingContext): Shader | null => {
 
     const uniformLocations = {
         time: gl.getUniformLocation(program, 'u_time'),
+        resolution: gl.getUniformLocation(program, 'u_resolution'),
     };
 
     return {
@@ -74,4 +78,5 @@ export const bindUniforms = (gl: WebGL2RenderingContext,
 
     gl.useProgram(shader.program);
     gl.uniform1f(uniformLocations.time, uniforms.time);
+    gl.uniform2fv(uniformLocations.resolution, uniforms.resolution);
 }

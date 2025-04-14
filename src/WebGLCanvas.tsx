@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { bindUniforms, createShader, Uniforms } from "./Shader";
+import { vec2 } from "gl-matrix";
 
 type WebGLCanvasProps = {
     width?: number;
@@ -9,6 +10,7 @@ type WebGLCanvasProps = {
 export const WebGLCanvas: React.FC<WebGLCanvasProps> = ({ width = 1080, height = 720 }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const glRef = useRef<WebGL2RenderingContext>(null);
+    const uniformsRef = useRef<Uniforms>(null);
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -41,7 +43,9 @@ export const WebGLCanvas: React.FC<WebGLCanvasProps> = ({ width = 1080, height =
 
         const uniforms: Uniforms = {
             time: 0,
+            resolution: [width, height],
         }
+        uniformsRef.current = uniforms;
 
         const deltaTimeMs = 1000.0 / 60.0;
         const startTimeMs = performance.now();
@@ -67,8 +71,13 @@ export const WebGLCanvas: React.FC<WebGLCanvasProps> = ({ width = 1080, height =
 
     useEffect(() => {
         const gl = glRef.current;
-        if (!gl) return;
-        gl.viewport(0, 0, width, height);
+        if (gl) {
+            gl.viewport(0, 0, width, height);
+        }
+        const uniforms = uniformsRef.current;
+        if (uniforms) {
+            vec2.set(uniforms.resolution, width, height);
+        }
     }, [width, height]);
 
     return (

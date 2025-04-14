@@ -1,16 +1,12 @@
 #version 300 es
 precision highp float;
 
-struct VertexOutput {
-    vec2 uv;
-};
-
-in VertexOutput v_out;
 out vec4 fragColor;
 
 uniform float u_time;
+uniform vec2 u_resolution;
 
-void main() {
-    vec2 uv = v_out.uv;
-    fragColor = vec4(uv.x, uv.y, sin(u_time) * 0.5 + 0.5, 1.0);
+void main(void) {
+    vec2 uv = gl_FragCoord.xy / u_resolution;
+    fragColor = vec4(uv, sin(u_time), 1.0);
 }
