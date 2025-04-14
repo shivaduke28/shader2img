@@ -104,6 +104,7 @@ export const updateFragmentShader = (gl: WebGL2RenderingContext,
         return;
     }
     shader.fragment = fragmentShader;
+    gl.useProgram(shader.program);
     shader.attributeLocations.position = gl.getAttribLocation(shader.program, 'a_position');
     shader.uniformLocations.time = gl.getUniformLocation(shader.program, 'u_time');
     shader.uniformLocations.resolution = gl.getUniformLocation(shader.program, 'u_resolution');

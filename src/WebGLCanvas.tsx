@@ -75,7 +75,7 @@ export const WebGLCanvas: React.FC<WebGLCanvasProps> = (props) => {
                 clearTimeout(timerId);
             }
         }
-    });
+    }, []);
 
     useEffect(() => {
         const gl = glRef.current;

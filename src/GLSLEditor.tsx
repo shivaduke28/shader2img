@@ -13,8 +13,7 @@ const GLSLEditor: React.FC<GLSLEditorProps> = (props: GLSLEditorProps) => {
     const editorRef = React.useRef<editor.IStandaloneCodeEditor | null>(null);
     const glRef = props.glRef;
 
-    const handleEditorDidMount: OnMount = (editor: editor.IStandaloneCodeEditor, monaco: Monaco) => {
-        console.log("Editor is mounted and ready to use!", editor, monaco);
+    const handleEditorDidMount: OnMount = (editor: editor.IStandaloneCodeEditor) => {
         editorRef.current = editor;
     };
 
@@ -31,7 +30,7 @@ const GLSLEditor: React.FC<GLSLEditorProps> = (props: GLSLEditorProps) => {
 
     return (
         <>
-            <button onClick={onClick} >
+            <button onClick={onClick} style={{ width: "100%", marginBottom: "1rem" }}>
                 Compile Shader
             </button >
             <Editor
