@@ -1,17 +1,20 @@
 import { useEffect, useRef } from "react";
-import { bindUniforms, createShader, Uniforms } from "./Shader";
+import { bindUniforms, createShader, Shader, Uniforms } from "./Shader";
 import { vec2 } from "gl-matrix";
 
 type WebGLCanvasProps = {
-    ref: React.RefObject<HTMLCanvasElement | null>;
+    canvasRef: React.RefObject<HTMLCanvasElement | null>;
+    shaderRef: React.RefObject<Shader | null>;
+    glRef: React.RefObject<WebGL2RenderingContext | null>;
     width: number;
     height: number;
 };
 
 export const WebGLCanvas: React.FC<WebGLCanvasProps> = (props) => {
-    const glRef = useRef<WebGL2RenderingContext>(null);
+    const glRef = props.glRef;
     const uniformsRef = useRef<Uniforms>(null);
-    const canvasRef = props.ref;
+    const canvasRef = props.canvasRef;
+    const shaderRef = props.shaderRef;
     const { width, height } = props;
 
     useEffect(() => {
@@ -28,6 +31,7 @@ export const WebGLCanvas: React.FC<WebGLCanvasProps> = (props) => {
 
         const shader = createShader(gl);
         if (!shader) return;
+        shaderRef.current = shader;
         gl.useProgram(shader.program);
 
         const vertices = new Float32Array([

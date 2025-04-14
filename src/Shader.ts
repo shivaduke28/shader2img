@@ -10,6 +10,8 @@ export type Uniforms = {
 export { fragmentShaderSource }
 
 export type Shader = {
+    vertex: WebGLShader,
+    fragment: WebGLShader,
     program: WebGLProgram,
     attributeLocations: {
         position: number,
@@ -20,7 +22,8 @@ export type Shader = {
     }
 }
 
-const createProgram = (gl: WebGL2RenderingContext): WebGLProgram | null => {
+
+export const createShader = (gl: WebGL2RenderingContext): Shader | null => {
     const createShader = (type: number, source: string): WebGLShader | null => {
         const shader = gl.createShader(type);
         if (!shader) return null;
@@ -50,12 +53,6 @@ const createProgram = (gl: WebGL2RenderingContext): WebGLProgram | null => {
         console.error(gl.getProgramInfoLog(program));
         return null;
     }
-    return program;
-}
-
-export const createShader = (gl: WebGL2RenderingContext): Shader | null => {
-    const program = createProgram(gl);
-    if (!program) return null;
 
     const attributeLocations = {
         position: gl.getAttribLocation(program, 'a_position'),
@@ -67,6 +64,8 @@ export const createShader = (gl: WebGL2RenderingContext): Shader | null => {
     };
 
     return {
+        vertex: vertexShader,
+        fragment: fragmentShader,
         program,
         attributeLocations,
         uniformLocations,
@@ -82,3 +81,30 @@ export const bindUniforms = (gl: WebGL2RenderingContext,
     gl.uniform1f(uniformLocations.time, uniforms.time);
     gl.uniform2fv(uniformLocations.resolution, uniforms.resolution);
 }
+
+export const updateFragmentShader = (gl: WebGL2RenderingContext,
+    shader: Shader,
+    fragmentShaderStr: string) => {
+    const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+    if (!fragmentShader) return;
+    gl.shaderSource(fragmentShader, fragmentShaderStr);
+    gl.compileShader(fragmentShader);
+
+    if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
+        console.error(gl.getShaderInfoLog(fragmentShader));
+        gl.deleteShader(fragmentShader);
+        return;
+    }
+    gl.detachShader(shader.program, shader.fragment);
+    gl.deleteShader(shader.fragment);
+    gl.attachShader(shader.program, fragmentShader);
+    gl.linkProgram(shader.program);
+    if (!gl.getProgramParameter(shader.program, gl.LINK_STATUS)) {
+        console.error(gl.getProgramInfoLog(shader.program));
+        return;
+    }
+    shader.fragment = fragmentShader;
+    shader.attributeLocations.position = gl.getAttribLocation(shader.program, 'a_position');
+    shader.uniformLocations.time = gl.getUniformLocation(shader.program, 'u_time');
+    shader.uniformLocations.resolution = gl.getUniformLocation(shader.program, 'u_resolution');
+};
