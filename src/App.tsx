@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import './App.css'
 import { WebGLCanvas } from './WebGLCanvas'
+import GLSLEditor from './GLSLEditor';
 
 function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -19,7 +20,8 @@ function App() {
   return (
     <>
       <h1>shader2img</h1>
-      <WebGLCanvas ref={canvasRef} width={1080} height={720} />
+      <WebGLCanvas ref={canvasRef} width={1920} height={1080} />
+      <GLSLEditor />
       <div className="card">
         <button onClick={saveImage}>
           save .png

@@ -7,6 +7,8 @@ export type Uniforms = {
     resolution: vec2,
 }
 
+export { fragmentShaderSource }
+
 export type Shader = {
     program: WebGLProgram,
     attributeLocations: {
