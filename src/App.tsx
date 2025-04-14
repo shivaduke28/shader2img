@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './App.css'
+import { WebGLCanvas } from './WebGLCanvas'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -7,6 +8,7 @@ function App() {
   return (
     <>
       <h1>shader2img</h1>
+      <WebGLCanvas width={1080} height={720} />
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
