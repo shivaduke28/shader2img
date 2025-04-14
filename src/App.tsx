@@ -1,17 +1,28 @@
-import { useState } from 'react'
+import { useRef } from 'react'
 import './App.css'
 import { WebGLCanvas } from './WebGLCanvas'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const saveImage = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const dataUrl = canvas.toDataURL('image/png');
+    const link = document.createElement('a');
+    link.href = dataUrl;
+    link.download = 'shader.png';
+    link.click();
+    link.remove();
+  };
 
   return (
     <>
       <h1>shader2img</h1>
-      <WebGLCanvas width={1080} height={720} />
+      <WebGLCanvas ref={canvasRef} width={1080} height={720} />
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+        <button onClick={saveImage}>
+          save .png
         </button>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR

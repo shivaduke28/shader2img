@@ -3,14 +3,16 @@ import { bindUniforms, createShader, Uniforms } from "./Shader";
 import { vec2 } from "gl-matrix";
 
 type WebGLCanvasProps = {
-    width?: number;
-    height?: number;
+    ref: React.RefObject<HTMLCanvasElement | null>;
+    width: number;
+    height: number;
 };
 
-export const WebGLCanvas: React.FC<WebGLCanvasProps> = ({ width = 1080, height = 720 }) => {
-    const canvasRef = useRef<HTMLCanvasElement>(null);
+export const WebGLCanvas: React.FC<WebGLCanvasProps> = (props) => {
     const glRef = useRef<WebGL2RenderingContext>(null);
     const uniformsRef = useRef<Uniforms>(null);
+    const canvasRef = props.ref;
+    const { width, height } = props;
 
     useEffect(() => {
         const canvas = canvasRef.current;
