@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { createShader } from "./Shader";
+import { bindUniforms, createShader, Uniforms } from "./Shader";
 
 type WebGLCanvasProps = {
     width?: number;
@@ -32,15 +32,37 @@ export const WebGLCanvas: React.FC<WebGLCanvasProps> = ({ width = 1080, height =
         const buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
         gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
-
         const positionLocation = shader.attributeLocations.position;
         gl.enableVertexAttribArray(positionLocation);
         gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 
-        gl.clearColor(0.0, 0.0, 0.0, 1.0);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 2);
-        gl.flush();
+        // no depth
+        gl.disable(gl.DEPTH_TEST);
+
+        const uniforms: Uniforms = {
+            time: 0,
+        }
+
+        const deltaTimeMs = 1000.0 / 60.0;
+        const startTimeMs = performance.now();
+        let timerId = 0;
+
+        const renderLoop = () => {
+            uniforms.time = (performance.now() - startTimeMs) / 1000;
+            bindUniforms(gl, shader, uniforms);
+
+            gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 2);
+
+            timerId = setTimeout(renderLoop, deltaTimeMs);
+        };
+
+        renderLoop();
+
+        return () => {
+            if (timerId > 0) {
+                clearTimeout(timerId);
+            }
+        }
     });
 
     useEffect(() => {

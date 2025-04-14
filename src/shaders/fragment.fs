@@ -12,5 +12,5 @@ uniform float u_time;
 
 void main() {
     vec2 uv = v_out.uv;
-    fragColor = vec4(uv.x, uv.y, 0.0, 1.0);
+    fragColor = vec4(uv.x, uv.y, sin(u_time) * 0.5 + 0.5, 1.0);
 }
