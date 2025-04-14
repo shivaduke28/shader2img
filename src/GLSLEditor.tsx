@@ -1,5 +1,5 @@
 import React from "react";
-import Editor, { Monaco, OnMount } from "@monaco-editor/react";
+import Editor, { OnMount } from "@monaco-editor/react";
 import { fragmentShaderSource, Shader, updateFragmentShader } from "./Shader";
 import { editor } from "monaco-editor";
 
